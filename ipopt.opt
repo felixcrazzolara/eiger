@@ -1,0 +1,5 @@
+# Approximate the hessian
+hessian_approximation limited-memory
+
+# Set the maximum number of iterations
+max_iter 100

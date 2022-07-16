@@ -1,0 +1,355 @@
+load(allgentran)$
+
+export_mat(expr,name) := block(
+    gentranlang:c,
+    if (is(equal(expr,0))) then return (0),
+    gentranout(name),
+    for r thru length(expr) do
+        (for c thru length(expr[1]) do
+            gentran(lrsetq(expr[r,c],expr[r,c]))
+        ),
+    gentranshut(name)
+)$
+
+export_mat_list(expr,name) := block(
+    for p thru length(expr) do 
+        export_mat(expr[p],sconcat(name,"_",p))
+)$
+
+export_scalar_list(expr,name) := block([file_output_append_old],
+    file_output_append_old : file_output_append,
+    file_output_append : true,
+    for p thru length(expr) do
+        with_stdout(name,print(expr[p])),
+    file_output_append : file_output_append_old
+)$
+
+mat_zero_entries(m) := block(
+    m0 : zerofor(m),
+    for r thru length(m) do
+        (for c thru length(m[1]) do
+            m0[r,c] : is(equal(m[r,c],0))
+        ),
+    m0
+)$
+
+mat_zero_entries_list(ml) := block([m0l],
+    m0l : [],
+    for i thru length(ml) do (
+        m0l : append(m0l,[mat_zero_entries(ml[i])])
+    ),
+    m0l
+)$
+
+list_zero_entries_list(l) := block([l0],
+    l0 : [],
+    for p thru length(l) do (
+        l0 : append(l0,[is(equal(l[p],0))])
+    ),
+    l0
+)$
+
+nested_list_lengths(l) := block([ll],
+    ll : [],
+    for p thru length(l) do (
+        ll : append(ll,[length(l[p])])
+    ),
+    ll
+)$
+
+export_expressions() := block(
+    /* Export the number of phases */
+    with_stdout("P",print(P)),
+
+    /* Export the number of static variables */
+    with_stdout("Ns",print(length(S))),
+
+    /* Export the number of states and inputs */
+    export_scalar_list(nested_list_lengths(Y),"ny"),
+    export_scalar_list(nested_list_lengths(U),"nu"),
+
+    /* Export the number of phase interconnection constraints */
+    with_stdout("Npsi",print(length(psi))),
+
+    /* Export the states and inputs */
+    with_stdout("Y",print(Y)),
+    with_stdout("U",print(U)),
+
+    /* Export objective functions */
+    export_scalar_list(phi,"phi"),
+    export_scalar_list(phi0,"phi0"),
+    export_scalar_list(eta,"eta"),
+    export_scalar_list(eta0,"eta0"),
+
+    /* Export the dynamics */
+    export_mat_list(a,"a"),
+    export_mat_list(a0,"a0"),
+
+    /* Export the phase interconnection constraints */
+    export_mat(transpose(matrix(psi)),"psi"),
+
+    /* Export the gradients */
+    export_mat_list(dphiy,"dphiy"),
+    export_mat_list(dphiy0,"dphiy0"),
+    export_mat_list(dphiu,"dphiu"),
+    export_mat_list(dphiu0,"dphiu0"),
+    export_mat_list(dphis,"dphis"),
+    export_mat_list(dphis0,"dphis0"),
+
+    export_mat_list(detay0,"detay0"),
+    export_mat_list(detay00,"detay00"),
+    export_mat_list(detayf,"detayf"),
+    export_mat_list(detayf0,"detayf0"),
+    export_scalar_list(detat0,"detat0"),
+    export_scalar_list(detat00,"detat00"),
+    export_scalar_list(detatf,"detatf"),
+    export_scalar_list(detatf0,"detatf0"),
+    export_mat_list(detas,"detas"),
+    export_mat_list(detas0,"detas0"),
+
+    /* Export the Jacobians */
+    export_mat_list(Jya,"Jya"),
+    export_mat_list(Jya0,"Jya0"),
+
+    export_mat_list(Jua,"Jua"),
+    export_mat_list(Jua0,"Jua0"),
+
+    export_mat_list(Jsa,"Jsa"),
+    export_mat_list(Jsa0,"Jsa0"),
+
+    export_mat_list(Jpsiy0,"Jpsiy0"),
+    export_mat_list(Jpsiy00,"Jpsiy00"),
+    export_mat_list(Jpsiyf,"Jpsiyf"),
+    export_mat_list(Jpsiyf0,"Jpsiyf0"),
+    export_mat_list(Jpsit0,"Jpsit0"),
+    export_mat_list(Jpsit00,"Jpsit00"),
+    export_mat_list(Jpsitf,"Jpsitf"),
+    export_mat_list(Jpsitf0,"Jpsitf0"),
+    export_mat(Jpsis,"Jpsis"),
+    export_mat(Jpsis0,"Jpsis0")
+)$
+
+grad(f,vars) := block([l],
+    l : [],
+    for i thru length(vars) do (
+        l : append(l,[diff(f,vars[i])])
+    ),
+    transpose(matrix(l))
+)$
+
+get_grad_list(expr,vars) := block([l],
+    l : [],
+    for i thru length(vars) do (
+        l : append(l,[matrix(diff(expr,vars[i]))])
+    ),
+    l
+)$
+
+get_diff_list(expr,var) := block([l],
+    l : [],
+    for p thru length(expr) do (
+        l : append(l,[diff(expr[p],var[p])])
+        ),
+    l
+)$
+
+get_gradient_list(expr,var) := block([l],
+    l : [], 
+    for p thru length(expr) do (
+        if length(var) > 0 and listp(var[1]) then (
+            l : append(l,[grad(expr[p],var[p])])
+        ) else (
+            l : append(l,[grad(expr[p],var)])
+        )),
+    l
+)$
+
+get_Jacobian_list_of_lists(expr,var) := block([l],
+    l : [],
+    for p thru length(expr) do (
+        if length(var) > 0 and listp(var[1]) then (
+            l : append(l,[jacobian(expr[p],var[p])])
+        ) else (
+            l : append(l,[jacobian(expr[p],var)])
+        )),
+    l
+)$
+
+get_Jacobian_list_of_list(expr,var) := block([l],
+    l : [],
+    for p thru length(var) do (
+        l : append(l,[jacobian(expr,var[p])])
+    ),
+    l
+)$
+
+compute_gradients() := block(
+    dphiy : get_gradient_list(phi,Y),
+    dphiu : get_gradient_list(phi,U),
+    dphis : get_gradient_list(phi,S),
+
+    detay0 : get_gradient_list(eta,Y0),
+    detayf : get_gradient_list(eta,Yf),
+    detat0 : get_diff_list(eta,t0),
+    detatf : get_diff_list(eta,tf),
+    detas  : get_gradient_list(eta,S)
+)$
+
+compute_Jacobians() := block(
+    Jya : get_Jacobian_list_of_lists(a,Y),
+    Jua : get_Jacobian_list_of_lists(a,U),
+    Jsa : get_Jacobian_list_of_lists(a,S),
+
+    Jpsiy0 : get_Jacobian_list_of_list(psi,Y0),
+    Jpsiyf : get_Jacobian_list_of_list(psi,Yf),
+    Jpsit0 : get_grad_list(psi,t0),
+    Jpsitf : get_grad_list(psi,tf),
+    Jpsis  : jacobian(psi,S)
+)$
+
+determine_zero_entries() := block(
+    phi0 : list_zero_entries_list(phi),
+    eta0 : list_zero_entries_list(eta),
+
+    a0   : mat_zero_entries_list(a),
+    Jya0 : mat_zero_entries_list(Jya),
+    Jua0 : mat_zero_entries_list(Jua),
+    Jsa0 : mat_zero_entries_list(Jsa),
+
+    dphiy0 : mat_zero_entries_list(dphiy),
+    dphiu0 : mat_zero_entries_list(dphiu),
+    dphis0 : mat_zero_entries_list(dphis),
+
+    detay00 : mat_zero_entries_list(detay0),
+    detayf0 : mat_zero_entries_list(detayf),
+    detat00 : list_zero_entries_list(detat0),
+    detatf0 : list_zero_entries_list(detatf),
+    detas0  : mat_zero_entries_list(detas),
+
+    Jpsiy00 : mat_zero_entries_list(Jpsiy0),
+    Jpsiyf0 : mat_zero_entries_list(Jpsiyf),
+    Jpsit00 : mat_zero_entries_list(Jpsit0),
+    Jpsitf0 : mat_zero_entries_list(Jpsitf),
+    Jpsis0  : mat_zero_entries(Jpsis)
+)$
+
+check_S() := block(
+    if (not ?boundp('S)) then S : []
+)$
+
+check_phi() := block(
+    if (not ?boundp('phi)) then block(
+        phi : [],
+        for p thru P do (phi : append(phi,[0]))
+    )
+)$
+
+check_eta() := block(
+    if (not ?boundp('eta)) then block(
+        eta : [],
+        for p thru P do (eta : append(eta,[0]))
+    )
+)$
+
+check_psi() := block(
+    if (not ?boundp('psi)) then block(
+        psi : []
+    )
+)$
+
+generate_headers() := block(
+    /* Check that all required quantities are defined */
+    check_S(),
+    check_phi(),
+    check_eta(),
+    check_psi(),
+
+    /* Compute the gradients */
+    compute_gradients(),
+
+    /* Compute the Jacobians */
+    compute_Jacobians(),
+
+    /* Convert a into a list of matrices */
+    a : block([aml],
+        aml : [],
+        for p thru length(a) do (
+            aml : append(aml,[matrix(a[p])])
+        ),
+        aml
+    ),
+
+    /* Determine the zero entries of the dynamics and the Jacobians */
+    determine_zero_entries(),
+
+    /* Export computed expressions */
+    export_expressions(),
+
+    /* Mark successful exit */
+    with_stdout("/tmp/MAXIMA_EXIT_CODE",print(0))
+)$
+
+check_state_and_input_names() := block(
+    for p thru P do (
+        for i thru length(Y[p]) do (
+            if equal(sconcat(Y[p][i]),"t") then (
+                with_stdout("/tmp/MAXIMA_EXIT_CODE",print(-1)),
+                printf(stderr,"An error occurred during code generation: 't' is a reserved name.~%"),
+                quit()
+            )
+        ),
+        for i thru length(U[p]) do (
+            if equal(sconcat(U[p][i]),"t") then (
+                with_stdout("/tmp/MAXIMA_EXIT_CODE",print(-1)),
+                printf(stderr,"An error occured during code generation: 't' is a reserved name.~%"),
+                quit()
+            )
+        )
+    )
+)$
+
+define_initial_and_final_states() := block([Y0ls,Yfls],
+    /* Check whether the states and inputs have valid names */
+    check_state_and_input_names(),
+
+    Y0ls : "[",
+    Yfls : "[",
+    for p thru P do (
+        Y0ls : sconcat(Y0ls,"["),
+        Yfls : sconcat(Yfls,"["),
+        for i thru length(Y[p]) do (
+            if i < length(Y[p]) then (
+                Y0ls : sconcat(Y0ls,Y[p][i],"0",p,","),
+                Yfls : sconcat(Yfls,Y[p][i],"f",p,",")
+            ) else (
+                Y0ls : sconcat(Y0ls,Y[p][i],"0",p),
+                Yfls : sconcat(Yfls,Y[p][i],"f",p)
+            )
+        ),
+        if p < P then (
+            Y0ls : sconcat(Y0ls,"],"),
+            Yfls : sconcat(Yfls,"],")
+        ) else (
+            Y0ls : sconcat(Y0ls,"]]"),
+            Yfls : sconcat(Yfls,"]]")
+        )
+    ),
+    eval_string(sconcat("Y0 : ",Y0ls)),
+    eval_string(sconcat("Yf : ",Yfls))
+)$
+
+define_initial_and_final_times() := block([t0ls,tfls],
+    t0ls : "[",
+    tfls : "[",
+    for p thru P do (
+        if p < P then (
+            t0ls : sconcat(t0ls,"t0",p,","),
+            tfls : sconcat(tfls,"tf",p,",")
+        ) else (
+            t0ls : sconcat(t0ls,"t0",p,"]"),
+            tfls : sconcat(tfls,"tf",p,"]")
+        )
+    ),
+    eval_string(sconcat("t0 : ",t0ls)),
+    eval_string(sconcat("tf : ",tfls))
+)$

@@ -1,0 +1,24 @@
+load("fenrir.mac")$
+
+/* Define the number of phases */
+P : 2$
+
+/* Define the states and inputs */
+Y : [[x,y],[x,y]]$         declare(Y,scalar)$
+U : [[v,theta],[v,theta]]$ declare(U,scalar)$
+define_initial_and_final_states()$
+
+/* Define initial and final times */
+define_initial_and_final_times()$
+
+/* Define the dynamics */
+a : [[v*cos(theta),v*sin(theta)],[v*cos(theta),v*sin(theta)]]$
+
+/* Define the objective */
+phi : [v*v,v*v]$
+
+/* Define phase interconnection constraints */
+psi : [yf1-yf2]$
+
+/* Generate header files */
+generate_headers()$

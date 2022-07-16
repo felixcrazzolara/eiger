@@ -1,0 +1,3 @@
+[submodule "3rd_party/cpp_script"]
+	path = 3rd_party/cpp_script
+	url = git@github.com:felixcra/cpp_script.git

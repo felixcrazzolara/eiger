@@ -1,0 +1,24 @@
+load("fenrir.mac")$
+
+/* Define the model parameters */
+g : 9.81$ /* m/s^2 */
+
+/* Define the number of phases */
+P : 1$
+
+/* Define the states and inputs */
+Y : [[x,y,v]]$ declare(Y,scalar)$
+U : [[u]]$     declare(U,scalar)$
+define_initial_and_final_states()$
+
+/* Define initial and final times */
+define_initial_and_final_times()$
+
+/* Define the dynamics */
+a : [[v*cos(u),v*sin(u),-g*sin(u)]]$
+
+/* Define the objective */
+eta : [tf1]$
+
+/* Generate header files */
+generate_headers()$
