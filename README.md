@@ -5,7 +5,7 @@ Eiger also offers a graphical user interface, which allows the user to convenien
 
 ### FAQ
 #### Who can use Eiger?
-By default, Eiger is currently available for personal non-academic use only! If this doesn't fit you needs contact felix.crazzolara[at]gmail.com.
+By default, Eiger is currently available for personal non-academic use only! If this doesn't fit your needs contact felix.crazzolara[at]gmail.com.
 
 #### I want to use parts of the Eiger code for a different purpose than solving trajectory optimization problems with Eiger, is that allowed?
 This is strictly prohibited!
