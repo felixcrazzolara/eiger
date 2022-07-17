@@ -30,3 +30,6 @@ The source code of cpp_script can be obtained at https://github.com/felixcrazzol
 
 #### Ipopt
 eiger uses Ipopt under the EPL-2.0 license. The source code of Ipopt can be obtained at https://github.com/coin-or/Ipopt.
+
+#### Maxima
+eiger uses Maxima under the GPL license. See https://maxima.sourceforge.io/ for instructions on how to receive the Maxima source code and to how to install Maxima.
