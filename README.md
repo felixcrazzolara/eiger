@@ -1,4 +1,18 @@
+## Eiger
+Eiger is a multi-phase trajectory optimization solver that uses the pseudo-spectral method to turn the optimization problem into a nonlinear program. The nonlinear program is currently solved by Ipopt, but other solvers may be supported in the future.<br><br>
+Ideally, Ipopt is provided gradient information about the objective and the constraints. Other trajectory optimization programs let Ipopt compute this information based on finite differences or by using automatic differentiation, which may not be very efficient. With Eiger, the user defines the dynamics as well as the constraints in a very easy-to-learn manner in Maxima code. Maxima is then used to derive analytical expressions of the gradients. Lastly, C++ code is generated from these expressions, which can later be optimizated by the C++ compiler.<br><br>
+Eiger also offers a graphical user interface, which allows the user to conveniently visualize solution data.
+
+### Examples
+#### Brachistochrone
+Consider the xy-plane and let there be two distinct points. The Brachistochrone refers to the problem of finding the path, which, when turned into a marble run, is such that there would be no other marble run connecting the points, which causes the marble to reach the lower point faster when being let loose at the upper end.<br><br>
+The solution of the Brachistochrone solved with Eiger is shown below.
+<p align="center">
+  <img src="img/Brachistochrone.jpg" style="width:90%;height:auto"/>
+</p>
+
 ### Dependencies
+#### Ipopt
 
 ### 3rd party licensing
 #### Legendre-Gauss-{Radau|Lobatto} nodes and weights
