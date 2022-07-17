@@ -11,6 +11,14 @@ The solution of the Brachistochrone solved with Eiger is shown below.
   <img src="img/Brachistochrone.jpg" style="width:90%;height:auto"/>
 </p>
 
+#### Minimal circumference
+Consider the xy-plane and let there be two distinct points along the y-axis. In order to demonstrate the multi-phase capabilities of Eiger, imagine there to be two movable points that start at the previously mentioned points at t=0. Suppose that these points can freely move in the xy-plane until some final time t=tf. At t=tf, their x-coordinates shall both be some non-zero value x=xf and their y-coordinates shall be the same as well.<br><br>
+While the two points could be regarded as a single system with four states, being the x and y-coordinates, the problem will be regarded as a two-phase problem, where in each phase only movable dot is considered. In each phase, the starting point as well as the final x-coordinate are introduced as constraints. An additional constraint imposes that the final y-coordinates in both phases shall be the same.<br><br>
+The objective is to minimize the integrated squared absolute velocity of the dots during their respective phases. It should not be hard to see that the starting points together with the final point of the optimal solution form an isosceles triangle. The solution of this problem solved with Eiger is shown below.
+<p align="center">
+  <img src="img/MinimalCircumference.jpg" style="width:90%;height:auto"/>
+</p>
+
 ### Dependencies
 #### Ipopt
 
