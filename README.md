@@ -3,6 +3,13 @@ Eiger is a multi-phase trajectory optimization solver that uses the pseudo-spect
 Ideally, Ipopt is provided gradient information about the objective and the constraints. Other trajectory optimization programs let Ipopt compute this information based on finite differences or by using automatic differentiation, which may not be very efficient. With Eiger, the user defines the dynamics as well as the constraints in a very easy-to-learn manner in Maxima code. Maxima is then used to derive analytical expressions of the gradients. Lastly, C++ code is generated from these expressions, which can later be optimizated by the C++ compiler.<br><br>
 Eiger also offers a graphical user interface, which allows the user to conveniently visualize solution data.
 
+### FAQ
+#### Who can use Eiger?
+By default, Eiger is currently available for personal non-academic use only! If this doesn't fit you needs contact felix.crazzolara[at]gmail.com.
+
+#### I want to use parts of the Eiger code for a different purpose than solving trajectory optimization problems with Eiger, is that allowed?
+This is strictly prohibited!
+
 ### Examples
 #### Brachistochrone
 Consider the xy-plane and let there be two distinct points. The Brachistochrone refers to the problem of finding the path, which, when turned into a marble run, is such that there would be no other marble run connecting the points, which causes the marble to reach the lower point faster when being let loose at the upper end.<br><br>
