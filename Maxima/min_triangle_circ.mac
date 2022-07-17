@@ -1,4 +1,4 @@
-load("fenrir.mac")$
+load("eiger.mac")$
 
 /* Define the number of phases */
 P : 2$
