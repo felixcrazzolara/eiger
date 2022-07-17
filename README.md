@@ -20,7 +20,7 @@ The objective is to minimize the integrated squared absolute velocity of the dot
 </p>
 
 ### Dependencies
-#### Ipopt
+Eiger was compiled with the Intel® oneAPI Toolkit and hence requires the respective shared libraries to be available to the dynamic linker.
 
 ### 3rd party licensing
 #### Legendre-Gauss-{Radau|Lobatto} nodes and weights
